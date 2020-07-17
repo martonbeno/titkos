@@ -1,0 +1,14 @@
+
+
+2 cél
+ha 1 hal mind hal
+fal ami megöl
+fal ami láthatatlan
+fal amin az egyik át tud menni
+kapcsoló
+
+monitor
+	látja a láthatatlant
+
+
+puzzle mező
