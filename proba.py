@@ -4,13 +4,13 @@ from Persistence import *
 
 
 model = Model()
-model.add_wall(30,200,400,20)
-model.add_door(400,200,50,20, 1)
-model.add_wall(450,200,800,20)
-model.add_button(300,10,50,50, 1)
-model.add_button(300,450,50,50, 1)
-model.add_button(500,10,50,50, 2)
-model.add_door(700,500,50,20, 2)
+model.add_killer_wall(30,200,400,20)
+# model.add_door(400,200,50,20, 1)
+model.add_passable_wall(450,200,800,20,pass_id=0)
+model.add_passable_wall(450,300,800,20,pass_id=1)
+model.add_goal(300,10,50,50, 0)
+model.add_goal(300,450,50,50, 1)
+# model.add_button(500,10,50,50, 2)
 
 pygame.init()
 
@@ -31,6 +31,7 @@ while run:
 		print("ki")
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
+		model.kill_players()
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
 		mtx = load_map_matrix("001.map")
