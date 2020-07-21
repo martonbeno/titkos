@@ -1,11 +1,14 @@
+									játék	mapeditor
 
-
-2 cél
-ha 1 hal mind hal
-fal ami megöl
+2 cél								PIPA
+ha 1 hal mind hal					PIPA
+pálya keret							PIPA
+fal ami megöl						PIPA
+fal amin az egyik át tud menni		PIPA
 fal ami láthatatlan
-fal amin az egyik át tud menni
 kapcsoló
+MovingObject class
+fix FPS
 
 monitor
 	látja a láthatatlant
