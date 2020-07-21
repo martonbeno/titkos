@@ -42,7 +42,7 @@ class Mapeditor:
 
 
 		root = tk.Tk()
-		root.geometry(f"{cell_size*width}x{cell_size*height+toolkit_size}")
+		root.geometry("1000x600")
 		toolkit = tk.Frame(master=root, width=cell_size*width, height=toolkit_size, bg="gray")
 		
 		nothing_button = tk.Button(master=toolkit, text="nothing", command=lambda:self.set_active('N'))
@@ -140,8 +140,8 @@ class Mapeditor:
 			for j in range(height):
 				self.draw_rec(i, j, 'N')
 				
-		toolkit.pack()
-		canvas.pack()
+		toolkit.grid(column=0, row=0)
+		canvas.grid(column=1, row=0)
 		root.mainloop()
 	
 	def debug(self):

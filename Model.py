@@ -98,8 +98,8 @@ class Model:
 		self.width = 500
 		self.height = 500
 		self.block_size = 10
-		self.p0 = Player(10,10, 10, .5, (255,0,0))
-		self.p1 = Player(100,100, 10, .5, (0,0,255))
+		self.p0 = Player(10,10, 10, 1, (255,0,0))
+		self.p1 = Player(100,100, 10, 1, (0,0,255))
 		self.players = [self.p0, self.p1]
 		self.init()
 	

@@ -8,7 +8,7 @@ fal amin az egyik át tud menni		PIPA	PIPA
 fal ami láthatatlan
 kapcsoló
 MovingObject class
-fix FPS
+fix FPS								PIPA	X
 
 monitor
 	látja a láthatatlant

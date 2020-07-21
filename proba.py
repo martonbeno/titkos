@@ -19,8 +19,7 @@ win = pygame.display.set_mode((model.width, model.height))
 run = True
 
 while run:
-	# pygame.time.delay(100)
-	
+	pygame.time.delay(10)
 	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -28,10 +27,9 @@ while run:
 	
 	buttons_pressed = pygame.key.get_pressed()
 	if buttons_pressed[pygame.K_ESCAPE]:
-		print("ki")
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
-		model.kill_players()
+		print(model.is_winning())
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
 		mtx = load_map_matrix("001.map")
