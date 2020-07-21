@@ -132,6 +132,15 @@ class Model:
 					self.add_button(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'D':
 					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id) #@todo nem 1, hanem máshogy kell reprezentálni
+				if code == 'S':
+					self.players[id].x = self.players[id].start_x = i*self.block_size
+					self.players[id].y = self.players[id].start_y = j*self.block_size
+				if code == 'G':
+					self.add_goal(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
+				if code == 'P':
+					self.add_passable_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
+				if code == 'K':
+					self.add_killer_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
 	
 	def add_wall(self, x, y, width, height):
 		self.walls.append(Wall(x, y, width, height))

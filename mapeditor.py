@@ -2,13 +2,33 @@ import tkinter as tk
 import re
 
 def color(code):
-	n = next(re.finditer(r'[A-Z]', code)).group(0)
+	letter = code[0]
+	if len(code) > 1:
+		number = code[1:]
+	
+		if letter == 'S':
+			if number == '0':
+				return "red"
+			if number == '1':
+				return "blue"
+		if letter == 'P':
+			if number == '0':
+				return "indian red"
+			if number == '1':
+				return "steel blue"
+		if letter == 'G':
+			if number == '0':
+				return "red4"
+			if number == '1':
+				return "blue4"
+	
 	color = {	'N':"white",
 				'W':"black",
 				'B':"green",
-				'D':"gray"
+				'D':"gray",
+				'K':"orange"
 			}
-	return color[n]
+	return color[letter]
 
 class Mapeditor:
 	def __init__(self):
@@ -25,35 +45,75 @@ class Mapeditor:
 		root.geometry(f"{cell_size*width}x{cell_size*height+toolkit_size}")
 		toolkit = tk.Frame(master=root, width=cell_size*width, height=toolkit_size, bg="gray")
 		
-		b1 = tk.Button(master=toolkit, text="nothing", command=lambda:self.set_active('N'))
+		nothing_button = tk.Button(master=toolkit, text="nothing", command=lambda:self.set_active('N'))
 		
-		b2 = tk.Button(master=toolkit, text="wall", command=lambda:self.set_active('W'))
+		self.spawn_id = tk.StringVar()
+		self.spawn_id.set('0')
+		spawn_button = tk.Button(master=toolkit, text="spawn", command=lambda:self.set_active('S'))
+		spawn_id_field = tk.Entry(master=toolkit, textvariable=self.spawn_id)
+		
+		wall_button = tk.Button(master=toolkit, text="wall", command=lambda:self.set_active('W'))
+		
+		killer_wall_button = tk.Button(master=toolkit, text="killer_wall", command=lambda:self.set_active('K'))
+		
+		self.passable_wall_id = tk.StringVar()
+		self.passable_wall_id.set('0')
+		passable_wall_button = tk.Button(master=toolkit, text="passable wall", command=lambda:self.set_active('P'))
+		passable_wall_id_field = tk.Entry(master=toolkit, textvariable=self.passable_wall_id)
 		
 		self.button_id = tk.StringVar()
 		self.button_id.set('1')
-		b3 = tk.Button(master=toolkit, text="button", command=lambda:self.set_active('B'))
+		button_button = tk.Button(master=toolkit, text="button", command=lambda:self.set_active('B'))
 		button_id_field = tk.Entry(master=toolkit, textvariable=self.button_id)
 		
 		self.door_id = tk.StringVar()
 		self.door_id.set('1')
-		b4 = tk.Button(master=toolkit, text="door", command=lambda:self.set_active('D'))
+		door_button = tk.Button(master=toolkit, text="door", command=lambda:self.set_active('D'))
 		door_id_field = tk.Entry(master=toolkit, textvariable=self.door_id)
 		
-		b5 = tk.Button(master=toolkit, text="undo", command=self.undo)
+		self.goal_id = tk.StringVar()
+		self.goal_id.set('0')
+		goal_button = tk.Button(master=toolkit, text="goal", command=lambda:self.set_active('G'))
+		goal_id_field = tk.Entry(master=toolkit, textvariable=self.goal_id)
 		
-		b6 = tk.Button(master=toolkit, text="export", command=lambda:self.export("001.map"))
 		
-		b7 = tk.Button(master=toolkit, text="debug", command=self.debug)
+		undo_button = tk.Button(master=toolkit, text="undo", command=self.undo)
 		
-		b1.grid(column=0, row=0)
-		b2.grid(column=0, row=1)
-		b3.grid(column=0, row=2)
-		button_id_field.grid(column=1, row=2)
-		b4.grid(column=0, row=3)
-		door_id_field.grid(column=1, row=3)
-		b5.grid(column=0, row=4)
-		b6.grid(column=0, row=5)
-		b7.grid(column=0, row=6)
+		export_button = tk.Button(master=toolkit, text="export", command=lambda:self.export("001.map"))
+		
+		debug_button = tk.Button(master=toolkit, text="debug", command=self.debug)
+		
+		
+		
+		
+		
+		
+		nothing_button.grid(column=0, row=0)
+		
+		spawn_button.grid(column=0, row=1)
+		spawn_id_field.grid(column=1, row=1)
+		
+		wall_button.grid(column=0, row=2)
+		
+		killer_wall_button.grid(column=1, row=2)
+		
+		passable_wall_button.grid(column=0, row=3)
+		passable_wall_id_field.grid(column=1, row=3)
+		
+		button_button.grid(column=0, row=4)
+		button_id_field.grid(column=1, row=4)
+		
+		door_button.grid(column=0, row=5)
+		door_id_field.grid(column=1, row=5)
+		
+		goal_button.grid(column=0, row=6)
+		goal_id_field.grid(column=1, row=6)
+		
+		undo_button.grid(column=0, row=10)
+		
+		export_button.grid(column=0, row=11)
+		
+		debug_button.grid(column=0, row=12)
 		
 
 
@@ -122,11 +182,19 @@ class Mapeditor:
 		
 		cell_code = self.active
 		if self.active == 'B':
-			assert re.match(r'^\d+$', self.button_id.get()), "szám kell legyen a mezőben"
 			cell_code += str(self.button_id.get())
 		if self.active == 'D':
-			assert re.match(r'^\d+$', self.door_id.get()), "szám kell legyen a mezőben"
 			cell_code += str(self.door_id.get())
+		if self.active == 'P':
+			cell_code += str(self.passable_wall_id.get())
+		if self.active == 'S':
+			cell_code += str(self.spawn_id.get())
+			for k, row in enumerate(self.mtx):
+				for m, elem in enumerate(row):
+					if elem == cell_code:
+						self.draw_rec(m, k, 'N')
+		if self.active == 'G':
+			cell_code += str(self.goal_id.get())
 		
 		old_c = self.draw_rec(i, j, cell_code)
 		if (i,j) not in self.last_draws[-1]:

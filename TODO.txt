@@ -1,10 +1,10 @@
 									játék	mapeditor
 
-2 cél								PIPA
-ha 1 hal mind hal					PIPA
-pálya keret							PIPA
-fal ami megöl						PIPA
-fal amin az egyik át tud menni		PIPA
+2 cél								PIPA	PIPA
+ha 1 hal mind hal					PIPA	PIPA
+pálya keret							PIPA	X
+fal ami megöl						PIPA	PIPA
+fal amin az egyik át tud menni		PIPA	PIPA
 fal ami láthatatlan
 kapcsoló
 MovingObject class
