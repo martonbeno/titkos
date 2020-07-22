@@ -5,11 +5,19 @@ ha 1 hal mind hal					PIPA	PIPA
 pálya keret							PIPA	X
 fal ami megöl						PIPA	PIPA
 fal amin az egyik át tud menni		PIPA	PIPA
+Collision javítás					PIPA	X
+mapeditor save button				X		PIPA
+mapeditor load button				X		OTTROHAGGYONMEG
 fal ami láthatatlan
 kapcsoló
+portal								PIPA
 MovingObject class
+
+összefüggő téglalapok
+
 fix FPS								PIPA	X
 
+tetszőleges pályaméret mapeditor
 monitor
 	látja a láthatatlant
 

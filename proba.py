@@ -8,8 +8,8 @@ model.add_killer_wall(30,200,400,20)
 # model.add_door(400,200,50,20, 1)
 model.add_passable_wall(450,200,800,20,pass_id=0)
 model.add_passable_wall(450,300,800,20,pass_id=1)
-model.add_goal(300,10,50,50, 0)
-model.add_goal(300,450,50,50, 1)
+model.add_portal(300,10,10,10, 0)
+model.add_portal(300,450,10,10, 0)
 # model.add_button(500,10,50,50, 2)
 
 pygame.init()
@@ -29,10 +29,10 @@ while run:
 	if buttons_pressed[pygame.K_ESCAPE]:
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
-		print(model.is_winning())
+		print(model.p0.x, model.p0.y)
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
-		mtx = load_map_matrix("001.map")
+		mtx = load_map_matrix("Helo.map")
 		model.load_map(mtx)
 	
 

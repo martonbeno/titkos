@@ -1,5 +1,3 @@
-
-
 def load_map_matrix(filename):	
 	ret = []
 	with open(filename, 'r', encoding='utf-8') as f:
@@ -7,5 +5,5 @@ def load_map_matrix(filename):
 		while line:
 			ret.append(line.split())
 			line = f.readline().strip()
-	
-	return list(zip(*ret))
+		
+	return ret

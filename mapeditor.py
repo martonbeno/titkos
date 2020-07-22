@@ -1,5 +1,7 @@
 import tkinter as tk
+from tkinter.filedialog import askopenfilename
 import re
+from Persistence import *
 
 def color(code):
 	letter = code[0]
@@ -79,10 +81,13 @@ class Mapeditor:
 		
 		undo_button = tk.Button(master=toolkit, text="undo", command=self.undo)
 		
-		export_button = tk.Button(master=toolkit, text="export", command=lambda:self.export("001.map"))
+		self.export_filename = tk.StringVar()
+		export_button = tk.Button(master=toolkit, text="export", command=self.export)
+		export_field = tk.Entry(master=toolkit, textvariable=self.export_filename)
+		
+		load_button = tk.Button(master=toolkit, text="import", command=lambda:self.load(askopenfilename()))
 		
 		debug_button = tk.Button(master=toolkit, text="debug", command=self.debug)
-		
 		
 		
 		
@@ -112,8 +117,12 @@ class Mapeditor:
 		undo_button.grid(column=0, row=10)
 		
 		export_button.grid(column=0, row=11)
+		export_field.grid(column=1, row=11)
 		
-		debug_button.grid(column=0, row=12)
+		load_button.grid(column=0, row=12)
+		
+		
+		debug_button.grid(column=0, row=13)
 		
 
 
@@ -200,11 +209,20 @@ class Mapeditor:
 		if (i,j) not in self.last_draws[-1]:
 			self.last_draws[-1][(i,j)] = old_c
 	
-	def export(self, filename):
+	def export(self):
+		filename = self.export_filename.get() + '.map'
+		if filename == '':
+			filename = 'untitled.map'
 		with open(filename, 'w+', encoding='utf-8') as f:
 			for line in self.mtx:
 				f.write(' '.join(map(str, line)))
 				f.write('\n')
+				
+	def load(self, filename):
+		self.mtx = load_map_matrix(filename)
+		for j, line in enumerate(self.mtx):
+			for i, elem in enumerate(line):
+				self.draw_rec(i, j, self.mtx[j][i])
 	
 if __name__ == "__main__":
 	mp = Mapeditor()

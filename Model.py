@@ -1,97 +1,10 @@
-class Object:
-	def __init__(self, x, y, width, height, color):
-		self.x = x
-		self.y = y
-		self.width = width
-		self.height = height
-		self.corners = [(x,y), (x+width,y), (x+width, y+height), (x, y+height)]
-		self.color = color
-		self.is_solid = True
-		self.is_killer = False
-	
-	def get_corners(self):
-		return [(self.x, self.y), (self.x+self.width, self.y), (self.x+self.width, self.y+self.height), (self.x, self.y+self.height)]
-	
-	def is_point_inside(self, x, y):
-		return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
-	
-	def collides(self, other):
-		if any(self.is_point_inside(*corner) for corner in other.get_corners()):
-			return True
-		if any(other.is_point_inside(*corner) for corner in self.get_corners()):
-			return True
-		return False
-
-class Wall(Object):
-	def __init__(self, x, y, width, height, color=(0,0,0), is_killer=False, pass_id=None): #pass_ids: ezek a játékosok át tudnak menni rajta
-		super().__init__(x, y, width, height, color)
-		self.is_killer = is_killer
-		self.is_solid = not is_killer
-		if is_killer:
-			self.color = (200, 100, 0)
-		self.pass_id = pass_id
-
-class Button(Object):
-	def __init__(self, x, y, width, height, id=None):
-		super().__init__(x, y, width, height, (128,128,128))
-		self.id = id
-		self.is_pushed = False
-		self.is_solid = False
-		self.released_color = self.color
-		self.pushed_color = (0,255,0)
-	
-	def push(self):
-		self.is_pushed = True
-		self.color = self.pushed_color
-	
-	def release(self):
-		self.is_pushed = False
-		self.color = self.released_color
-
-class Goal(Button):
-	def __init__(self, x, y, width, height, player):
-		super().__init__(x, y, width, height, )
-		self.player = player
-		self.color = player.color
-		self.released_color = player.color
-		self.pushed_color = player.color
-
-class Door(Object):
-	def __init__(self, x, y, width, height, id):
-		super().__init__(x, y, width, height, (128,128,128))
-		self.id = id
-		self.is_solid = True
-	
-	def open(self):
-		self.is_solid = False
-		self.color = (192,192,192)
-		
-	def close(self):
-		self.is_solid = True
-		self.color = (128,128,128)
-
-class Player(Object):
-	def __init__(self, x, y, size, speed, color):
-		super().__init__(x, y, size, size, color)
-		self.start_x = x
-		self.start_y = y
-		self.size = size
-		self.speed = speed
-		self.is_solid = False
-	
-	def move(self, dir):
-		if dir == "up":
-			self.y -= self.speed
-		if dir == "right":
-			self.x += self.speed
-		if dir == "down":
-			self.y += self.speed
-		if dir == "left":
-			self.x -= self.speed
-	
-	def kill(self):
-		self.x = self.start_x
-		self.y = self.start_y
+from Object import *
+from Door import *
+from Goal import *
+from Player import *
+from Button import *
+from Wall import *
+from Portal import *
 
 class Model:
 	def __init__(self):
@@ -113,11 +26,12 @@ class Model:
 		self.buttons = []
 		self.doors = []
 		self.goals = []
+		self.portals = []
 	
 	def load_map(self, mtx):
 		self.init()
-		for i, line in enumerate(mtx):
-			for j, elem in enumerate(line):
+		for j, line in enumerate(mtx):
+			for i, elem in enumerate(line):
 				code = elem[0]
 				try:
 					id = int(elem[1:])
@@ -131,7 +45,7 @@ class Model:
 				if code == 'B':
 					self.add_button(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'D':
-					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id) #@todo nem 1, hanem máshogy kell reprezentálni
+					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'S':
 					self.players[id].x = self.players[id].start_x = i*self.block_size
 					self.players[id].y = self.players[id].start_y = j*self.block_size
@@ -167,12 +81,16 @@ class Model:
 	
 	def add_goal(self, x, y, width, height, player_id):
 		self.goals.append(Goal(x, y, width, height, self.players[player_id]))
+		
+	def add_portal(self, x, y, width, height, id):
+		self.portals.append(Portal(x, y, width, height, id))
 	
 	def get_objects(self):
-		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.players
+		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.portals + self.players
 	
 	def move_player(self, player_id, dir):
 		player = self.players[player_id]
+			
 		old_pos = player.x, player.y
 		player.move(dir)
 		
@@ -187,13 +105,22 @@ class Model:
 		
 		if not can_move:
 			player.x, player.y = old_pos
-		
+			
 		#ha ütközik killer wall-lal
 		if any(player.collides(wall) for wall in self.killer_walls):
 			self.kill_players()
-		
+			
+		for portal in self.portals:
+			if player.collides(portal) and portal.is_active:
+				for portal2 in self.portals:
+					if portal2.id == portal.id and portal2 != portal:
+						player.x = portal2.x
+						player.y = portal2.y
+						portal2.is_active = False
+						
 		self.update_buttons()
 		self.update_doors()
+		self.update_portals()
 	
 	def kill_players(self):
 		for player in self.players:
@@ -220,6 +147,11 @@ class Model:
 					break
 			else:
 				door.close()
+				
+	def update_portals(self):
+		for portal in self.portals:
+			if not any(player.collides(portal) for player in self.players):
+				portal.is_active = True
 	
 	def is_winning(self):
 		for player in self.players:
