@@ -4,13 +4,13 @@ from Persistence import *
 
 
 model = Model()
-model.add_killer_wall(30,200,400,20)
-# model.add_door(400,200,50,20, 1)
-model.add_passable_wall(450,200,800,20,pass_id=0)
-model.add_passable_wall(450,300,800,20,pass_id=1)
+#model.add_killer_wall(30,200,400,20)
+model.add_door(100,100,50,20, 1)
+#model.add_passable_wall(450,200,800,20,pass_id=0)
+#model.add_passable_wall(450,300,800,20,pass_id=1)
 model.add_portal(300,10,10,10, 0)
 model.add_portal(300,450,10,10, 0)
-# model.add_button(500,10,50,50, 2)
+model.add_switch(400,10,50,50, 1)
 
 pygame.init()
 
@@ -32,7 +32,7 @@ while run:
 		print(model.p0.x, model.p0.y)
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
-		mtx = load_map_matrix("Helo.map")
+		mtx = load_map_matrix("teszt.map")
 		model.load_map(mtx)
 	
 
@@ -44,6 +44,8 @@ while run:
 		model.move_player(0, "down")
 	if buttons_pressed[pygame.K_LEFT]:
 		model.move_player(0, "left")
+		
+	model.p0.use = buttons_pressed[pygame.K_RSHIFT]
 	
 	if buttons_pressed[pygame.K_w]:
 		model.move_player(1, "up")
@@ -53,6 +55,9 @@ while run:
 		model.move_player(1, "down")
 	if buttons_pressed[pygame.K_a]:
 		model.move_player(1, "left")
+		
+	model.p1.use = buttons_pressed[pygame.K_LSHIFT]
+		
 	
 	win.fill((255,255,255))
 	

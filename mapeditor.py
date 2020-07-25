@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename
 import re
 from Persistence import *
+from colormap import rgb2hex
 
 def color(code):
 	letter = code[0]
@@ -23,12 +24,14 @@ def color(code):
 				return "red4"
 			if number == '1':
 				return "blue4"
+		if letter == 'T':
+			return rgb2hex(130+int(number)*20, int(number)*40, 255)
 	
 	color = {	'N':"white",
 				'W':"black",
 				'B':"green",
 				'D':"gray",
-				'K':"orange"
+				'K':"orange",
 			}
 	return color[letter]
 
@@ -68,6 +71,11 @@ class Mapeditor:
 		button_button = tk.Button(master=toolkit, text="button", command=lambda:self.set_active('B'))
 		button_id_field = tk.Entry(master=toolkit, textvariable=self.button_id)
 		
+		self.portal_id = tk.StringVar()
+		self.portal_id.set('1')
+		portal_button = tk.Button(master=toolkit, text="portal", command=lambda:self.set_active('T'))
+		portal_id_field = tk.Entry(master=toolkit, textvariable=self.portal_id)
+		
 		self.door_id = tk.StringVar()
 		self.door_id.set('1')
 		door_button = tk.Button(master=toolkit, text="door", command=lambda:self.set_active('D'))
@@ -77,7 +85,6 @@ class Mapeditor:
 		self.goal_id.set('0')
 		goal_button = tk.Button(master=toolkit, text="goal", command=lambda:self.set_active('G'))
 		goal_id_field = tk.Entry(master=toolkit, textvariable=self.goal_id)
-		
 		
 		undo_button = tk.Button(master=toolkit, text="undo", command=self.undo)
 		
@@ -113,6 +120,9 @@ class Mapeditor:
 		
 		goal_button.grid(column=0, row=6)
 		goal_id_field.grid(column=1, row=6)
+		
+		portal_button.grid(column=0, row=7)
+		portal_id_field.grid(column=1, row=7)
 		
 		undo_button.grid(column=0, row=10)
 		
@@ -204,6 +214,16 @@ class Mapeditor:
 						self.draw_rec(m, k, 'N')
 		if self.active == 'G':
 			cell_code += str(self.goal_id.get())
+		if self.active == 'T':
+			cell_code += str(self.portal_id.get())
+			old_portals = []
+			for k, row in enumerate(self.mtx):
+				for m, elem in enumerate(row):
+					if elem == cell_code:
+						old_portals.append((m,k))
+			if len(old_portals) >= 2:
+				for p, q in old_portals:
+					self.draw_rec(p, q, 'N')
 		
 		old_c = self.draw_rec(i, j, cell_code)
 		if (i,j) not in self.last_draws[-1]:

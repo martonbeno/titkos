@@ -5,14 +5,15 @@ from Player import *
 from Button import *
 from Wall import *
 from Portal import *
+from Switch import *
 
 class Model:
 	def __init__(self):
 		self.width = 500
 		self.height = 500
 		self.block_size = 10
-		self.p0 = Player(10,10, 10, 1, (255,0,0))
-		self.p1 = Player(100,100, 10, 1, (0,0,255))
+		self.p0 = Player(10,10, 10, 1, (255,0,0), 0)
+		self.p1 = Player(50,50, 10, 1, (0,0,255), 1)
 		self.players = [self.p0, self.p1]
 		self.init()
 	
@@ -24,9 +25,12 @@ class Model:
 		self.walls = [w1, w2, w3, w4]
 		self.killer_walls = []
 		self.buttons = []
+		self.switches = []
 		self.doors = []
 		self.goals = []
 		self.portals = []
+		self.activators = []
+		self.activatables = []
 	
 	def load_map(self, mtx):
 		self.init()
@@ -44,8 +48,6 @@ class Model:
 					self.add_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
 				if code == 'B':
 					self.add_button(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
-				if code == 'D':
-					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'S':
 					self.players[id].x = self.players[id].start_x = i*self.block_size
 					self.players[id].y = self.players[id].start_y = j*self.block_size
@@ -55,6 +57,17 @@ class Model:
 					self.add_passable_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'K':
 					self.add_killer_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
+	
+		for j, line in enumerate(mtx):
+			for i, elem in enumerate(line):
+				code = elem[0]
+				try:
+					id = int(elem[1:])
+				except:
+					pass
+			
+				if code == 'D':
+					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 	
 	def add_wall(self, x, y, width, height):
 		self.walls.append(Wall(x, y, width, height))
@@ -69,15 +82,23 @@ class Model:
 	def add_killer_wall(self, x, y, width, height):
 		self.killer_walls.append(Wall(x, y, width, height, is_killer=True))
 		
-	def add_button(self, x, y, width, height, id=None):
-		if id is None:
-			id = max(self.buttons, key=lambda b:b.id) if self.buttons else 0
-		self.buttons.append(Button(x, y, width, height, id))
+	def add_button(self, x, y, width, height, id):
+		button = Button(x, y, width, height, id)
+		self.buttons.append(button)
+		self.activators.append(button)
+		
+	def add_switch(self, x, y, width, height, id):
+		switch = Switch(x, y, width, height, id)
+		self.switches.append(switch)
+		self.activators.append(switch)
 	
-	def add_door(self, x, y, width, height, id=None):
-		if id is None:
-			id = max(self.doors, key=lambda b:b.id) if self.doors else 0
-		self.doors.append(Door(x, y, width, height, id))
+	def add_door(self, x, y, width, height, id):
+		door = Door(x, y, width, height)
+		self.doors.append(door)
+		self.activatables.append(door)
+		for ac in self.activators:
+			if ac.id == id:
+				ac.add_activatable(door)
 	
 	def add_goal(self, x, y, width, height, player_id):
 		self.goals.append(Goal(x, y, width, height, self.players[player_id]))
@@ -86,7 +107,7 @@ class Model:
 		self.portals.append(Portal(x, y, width, height, id))
 	
 	def get_objects(self):
-		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.portals + self.players
+		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.portals + self.switches + self.players
 	
 	def move_player(self, player_id, dir):
 		player = self.players[player_id]
@@ -119,8 +140,9 @@ class Model:
 						portal2.is_active = False
 						
 		self.update_buttons()
-		self.update_doors()
 		self.update_portals()
+		self.update_switches()
+		self.update_activatables()
 	
 	def kill_players(self):
 		for player in self.players:
@@ -129,29 +151,29 @@ class Model:
 	def update_buttons(self):
 		for button in self.buttons:
 			if any(player.collides(button) for player in self.players):
-				button.push()
+				button.activate()
 			else:
-				button.release()
+				button.deactivate()
 		
 		for goal in self.goals:
 			if goal.player.collides(goal):
-				goal.push()
+				goal.activate()
 			else:
-				goal.release()
-	
-	def update_doors(self):
-		for door in self.doors:
-			for button in filter(lambda x:x.id == door.id, self.buttons):
-				if button.is_pushed:
-					door.open()
-					break
-			else:
-				door.close()
-				
+				goal.deactivate()
+
+	def update_switches(self):
+		for switch in self.switches:
+			if any(player.collides(switch) and player.use for player in self.players):
+				switch.toggle()
+		
 	def update_portals(self):
 		for portal in self.portals:
 			if not any(player.collides(portal) for player in self.players):
 				portal.is_active = True
+				
+	def update_activatables(self):
+		for ac in self.activatables:
+			ac.refresh_state()
 	
 	def is_winning(self):
 		for player in self.players:

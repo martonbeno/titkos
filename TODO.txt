@@ -9,9 +9,12 @@ Collision javítás					PIPA	X
 mapeditor save button				X		PIPA
 mapeditor load button				X		OTTROHAGGYONMEG
 fal ami láthatatlan
-kapcsoló
-portal								PIPA
+kapcsoló							in progress
+portal								PIPA	PIPA
 MovingObject class
+Activator/Activatable class			PIPA	X
+
+Art + képek beillesztése
 
 összefüggő téglalapok
 
