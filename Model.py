@@ -1,3 +1,5 @@
+import numpy as np
+
 from Object import *
 from Door import *
 from Goal import *
@@ -12,7 +14,7 @@ class Model:
 		self.width = 500
 		self.height = 500
 		self.block_size = 10
-		self.p0 = Player(10,10, 10, 1, (255,0,0), 0)
+		self.p0 = Player(50,10, 10, 1, (255,0,0), 0)
 		self.p1 = Player(50,50, 10, 1, (0,0,255), 1)
 		self.players = [self.p0, self.p1]
 		self.init()
@@ -31,6 +33,12 @@ class Model:
 		self.portals = []
 		self.activators = []
 		self.activatables = []
+	
+	def get_objects_in_rect(self, x, y, width, height):
+		ret = []
+		field_of_view = Object(x, y, width, height, color=None)
+		for o in filter(lambda x:field_of_view.contains(x), self.get_objects()):
+			ret.append(o)
 	
 	def load_map(self, mtx):
 		self.init()

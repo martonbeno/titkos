@@ -7,7 +7,7 @@ from tkinter.filedialog import askopenfilename
 tkinter.Tk().withdraw()
 model = Model()
 #model.add_killer_wall(30,200,400,20)
-model.add_door(100,100,50,20, 1)
+model.add_door(0,10,50,20, 1)
 #model.add_passable_wall(450,200,800,20,pass_id=0)
 #model.add_passable_wall(450,300,800,20,pass_id=1)
 model.add_portal(300,10,10,10, 0)
@@ -34,7 +34,8 @@ while run:
 	if buttons_pressed[pygame.K_ESCAPE]:
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
-		print(model.doors[0].activators)
+		for o in model.p0.field_of_view.get_objects(model.get_objects()):
+			print(o)
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
 		map = askopenfilename()
@@ -74,9 +75,14 @@ while run:
 	
 	win.fill((255,255,255))
 	
-	for o in model.get_objects():
+	for o in model.p0.field_of_view.get_objects(model.get_objects(), True):
 		pygame.draw.rect(win, o.color, (o.x, o.y, o.width, o.height))
+	# for o in model.get_objects():
+		# pygame.draw.rect(win, o.color, (o.x, o.y, o.width, o.height))
 	
+	
+	# model.update_pixelmatrix()
+	# pygame.surfarray.blit_array(win, model.pixelmatrix)
 	
 	pygame.display.update()
 	

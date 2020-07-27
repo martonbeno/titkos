@@ -13,6 +13,7 @@ kapcsoló							PIPA	PIPA
 portal								PIPA	PIPA
 MovingObject class
 Activator/Activatable class			PIPA	X
+ha beragad a falba: HALÁL
 
 Art + képek beillesztése
 
@@ -21,8 +22,9 @@ Art + képek beillesztése
 fix FPS								PIPA	X
 
 tetszőleges pályaméret mapeditor
-monitor
-	látja a láthatatlant
+egyedi nézőpont
+	monitor
+		látja a láthatatlant
 
 
 puzzle mező
