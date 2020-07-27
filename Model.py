@@ -57,6 +57,8 @@ class Model:
 					self.add_passable_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 				if code == 'K':
 					self.add_killer_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
+				if code == 'O':
+					self.add_switch(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
 	
 		for j, line in enumerate(mtx):
 			for i, elem in enumerate(line):
@@ -141,7 +143,11 @@ class Model:
 						
 		self.update_buttons()
 		self.update_portals()
-		self.update_switches()
+		self.update_activatables()
+	
+	def use_player(self, player_id):
+		self.update_switches(self.players[player_id])
+		self.players[player_id].use()
 		self.update_activatables()
 	
 	def kill_players(self):
@@ -161,10 +167,11 @@ class Model:
 			else:
 				goal.deactivate()
 
-	def update_switches(self):
+	def update_switches(self, player):
+		player.switches.clear()
 		for switch in self.switches:
-			if any(player.collides(switch) and player.use for player in self.players):
-				switch.toggle()
+			if player.collides(switch):
+				player.switches.append(switch)
 		
 	def update_portals(self):
 		for portal in self.portals:

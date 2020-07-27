@@ -26,6 +26,8 @@ def color(code):
 				return "blue4"
 		if letter == 'T':
 			return rgb2hex(130+int(number)*20, int(number)*40, 255)
+		if letter == 'O':
+			return rgb2hex(190, 190, 190)
 	
 	color = {	'N':"white",
 				'W':"black",
@@ -86,6 +88,11 @@ class Mapeditor:
 		goal_button = tk.Button(master=toolkit, text="goal", command=lambda:self.set_active('G'))
 		goal_id_field = tk.Entry(master=toolkit, textvariable=self.goal_id)
 		
+		self.switch_id = tk.StringVar()
+		self.switch_id.set('1')
+		switch_button = tk.Button(master=toolkit, text="switch", command=lambda:self.set_active('O'))
+		switch_id_field = tk.Entry(master=toolkit, textvariable=self.switch_id)
+		
 		undo_button = tk.Button(master=toolkit, text="undo", command=self.undo)
 		
 		self.export_filename = tk.StringVar()
@@ -123,6 +130,9 @@ class Mapeditor:
 		
 		portal_button.grid(column=0, row=7)
 		portal_id_field.grid(column=1, row=7)
+		
+		switch_button.grid(column=0, row=8)
+		switch_id_field.grid(column=1, row=8)
 		
 		undo_button.grid(column=0, row=10)
 		
@@ -202,6 +212,8 @@ class Mapeditor:
 		cell_code = self.active
 		if self.active == 'B':
 			cell_code += str(self.button_id.get())
+		if self.active == 'O':
+			cell_code += str(self.switch_id.get())
 		if self.active == 'D':
 			cell_code += str(self.door_id.get())
 		if self.active == 'P':

@@ -9,7 +9,7 @@ class Player(Object):
 		self.speed = speed
 		self.is_solid = False
 		self.id = id
-		self.use = False
+		self.switches = []
 	
 	def move(self, dir, v=None):
 		if v==None:
@@ -26,3 +26,7 @@ class Player(Object):
 	def kill(self):
 		self.x = self.start_x
 		self.y = self.start_y
+		
+	def use(self):
+		for sw in self.switches:
+			sw.toggle()

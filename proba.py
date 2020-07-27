@@ -1,8 +1,10 @@
 import pygame
+import tkinter
 from Model import *
 from Persistence import *
+from tkinter.filedialog import askopenfilename
 
-
+tkinter.Tk().withdraw()
 model = Model()
 #model.add_killer_wall(30,200,400,20)
 model.add_door(100,100,50,20, 1)
@@ -18,6 +20,9 @@ win = pygame.display.set_mode((model.width, model.height))
 
 run = True
 
+already_pressed_lCTRL = False
+already_pressed_rCTRL = False
+
 while run:
 	pygame.time.delay(10)
 	
@@ -29,10 +34,11 @@ while run:
 	if buttons_pressed[pygame.K_ESCAPE]:
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
-		print(model.p0.x, model.p0.y)
+		print(model.doors[0].activators)
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
-		mtx = load_map_matrix("teszt.map")
+		map = askopenfilename()
+		mtx = load_map_matrix(map)
 		model.load_map(mtx)
 	
 
@@ -44,8 +50,12 @@ while run:
 		model.move_player(0, "down")
 	if buttons_pressed[pygame.K_LEFT]:
 		model.move_player(0, "left")
-		
-	model.p0.use = buttons_pressed[pygame.K_RSHIFT]
+	
+	if buttons_pressed[pygame.K_RCTRL] and not already_pressed_rCTRL:
+		already_pressed_rCTRL = True
+		model.use_player(0)
+	elif not buttons_pressed[pygame.K_RCTRL] and already_pressed_rCTRL:
+		already_pressed_rCTRL = False
 	
 	if buttons_pressed[pygame.K_w]:
 		model.move_player(1, "up")
@@ -56,8 +66,11 @@ while run:
 	if buttons_pressed[pygame.K_a]:
 		model.move_player(1, "left")
 		
-	model.p1.use = buttons_pressed[pygame.K_LSHIFT]
-		
+	if buttons_pressed[pygame.K_LCTRL] and not already_pressed_lCTRL:
+		already_pressed_lCTRL = True
+		model.use_player(1)
+	elif not buttons_pressed[pygame.K_LCTRL] and already_pressed_lCTRL:
+		already_pressed_lCTRL = False
 	
 	win.fill((255,255,255))
 	

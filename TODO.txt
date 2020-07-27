@@ -9,7 +9,7 @@ Collision javítás					PIPA	X
 mapeditor save button				X		PIPA
 mapeditor load button				X		OTTROHAGGYONMEG
 fal ami láthatatlan
-kapcsoló							in progress
+kapcsoló							PIPA	PIPA
 portal								PIPA	PIPA
 MovingObject class
 Activator/Activatable class			PIPA	X
