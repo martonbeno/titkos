@@ -35,9 +35,32 @@ class Field_of_view(Rectangle):
 		if not self.collides(other):
 			return None
 		
+		self.update_coordinates()
+		
 		left = max(self.x, other.x)
 		right = min(self.x+self.width, other.x+other.width)
 		top = max(self.y, other.y)
 		bottom = min(self.y+self.height, other.y+other.height)
 		
-		return Rectangle(left, top, right-left, bottom-top, other.color)
+		return Rectangle(left-self.x, top-self.y, right-left, bottom-top, other.color)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

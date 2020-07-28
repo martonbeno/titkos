@@ -11,7 +11,7 @@ class Player(Object):
 		self.is_solid = False
 		self.id = id
 		self.switches = []
-		self.field_of_view = Field_of_view(300, 300, self)
+		self.field_of_view = Field_of_view(200, 200, self)
 	
 	def move(self, dir, v=None):
 		if v==None:

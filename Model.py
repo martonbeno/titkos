@@ -34,50 +34,57 @@ class Model:
 		self.activators = []
 		self.activatables = []
 	
-	def get_objects_in_rect(self, x, y, width, height):
-		ret = []
-		field_of_view = Object(x, y, width, height, color=None)
-		for o in filter(lambda x:field_of_view.contains(x), self.get_objects()):
-			ret.append(o)
+	def get_field_of_view_objects(self, player_id):
+		return self.players[player_id].field_of_view.get_objects(self.get_objects())
 	
-	def load_map(self, mtx):
+	def load_map(self, d_list):
 		self.init()
-		for j, line in enumerate(mtx):
-			for i, elem in enumerate(line):
-				code = elem[0]
-				try:
-					id = int(elem[1:])
-				except:
-					pass
-				
-				if code == 'N':
-					pass
-				if code == 'W':
-					self.add_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
-				if code == 'B':
-					self.add_button(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
-				if code == 'S':
-					self.players[id].x = self.players[id].start_x = i*self.block_size
-					self.players[id].y = self.players[id].start_y = j*self.block_size
-				if code == 'G':
-					self.add_goal(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
-				if code == 'P':
-					self.add_passable_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
-				if code == 'K':
-					self.add_killer_wall(i*self.block_size, j*self.block_size, self.block_size, self.block_size)
-				if code == 'O':
-					self.add_switch(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
-	
-		for j, line in enumerate(mtx):
-			for i, elem in enumerate(line):
-				code = elem[0]
-				try:
-					id = int(elem[1:])
-				except:
-					pass
+		for d in filter(lambda x:x['field'][0] != 'D', d_list):
+			field = d['field']
+			code = field[0]
+			try:
+				id = int(field[1:])
+			except:
+				pass
 			
-				if code == 'D':
-					self.add_door(i*self.block_size, j*self.block_size, self.block_size, self.block_size, id)
+			x = d['x'] * self.block_size
+			y = d['y'] * self.block_size
+			width = d['width'] * self.block_size
+			height = d['height'] * self.block_size
+			
+			if code == 'N':
+				pass
+			if code == 'W':
+				self.add_wall(x, y, width, height)
+			if code == 'B':
+				self.add_button(x, y, width, height, id)
+			if code == 'S':
+				self.players[id].x = self.players[id].start_x = x
+				self.players[id].y = self.players[id].start_y = y
+			if code == 'G':
+				self.add_goal(x, y, width, height, id)
+			if code == 'P':
+				self.add_passable_wall(x, y, width, height, id)
+			if code == 'K':
+				self.add_killer_wall(x, y, width, height)
+			if code == 'O':
+				self.add_switch(x, y, width, height, id)
+		
+		for d in filter(lambda x:x['field'][0] == 'D', d_list):
+			field = d['field']
+			code = field[0]
+			try:
+				id = int(field[1:])
+			except:
+				pass
+			
+			x = d['x'] * self.block_size
+			y = d['y'] * self.block_size
+			width = d['width'] * self.block_size
+			height = d['height'] * self.block_size
+			
+			if code == 'D':
+				self.add_door(x, y, width, height, id)
 	
 	def add_wall(self, x, y, width, height):
 		self.walls.append(Wall(x, y, width, height))

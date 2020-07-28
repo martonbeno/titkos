@@ -17,12 +17,12 @@ ha beragad a falba: HALÁL
 
 Art + képek beillesztése
 
-összefüggő téglalapok
+összefüggő téglalapok				PIPA
 
 fix FPS								PIPA	X
 
 tetszőleges pályaméret mapeditor
-egyedi nézőpont
+egyedi nézőpont						PIPA	X
 	monitor
 		látja a láthatatlant
 

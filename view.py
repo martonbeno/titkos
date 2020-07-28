@@ -16,7 +16,11 @@ model.add_switch(400,10,50,50, 1)
 
 pygame.init()
 
-win = pygame.display.set_mode((model.width, model.height))
+# win = pygame.display.set_mode((model.width, model.height))
+win = pygame.display.set_mode((700, 500))
+main_surface = pygame.Surface((500, 500))
+p0_surface = pygame.Surface((200, 200))
+p1_surface = pygame.Surface((200, 200))
 
 run = True
 
@@ -34,14 +38,12 @@ while run:
 	if buttons_pressed[pygame.K_ESCAPE]:
 		run = False
 	if buttons_pressed[pygame.K_SPACE]:
-		for o in model.p0.field_of_view.get_objects(model.get_objects()):
-			print(o)
+		# for o in model.get_field_of_view_objects(0):
+		print(len(model.get_objects()))
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
-		map = askopenfilename()
-		mtx = load_map_matrix(map)
-		model.load_map(mtx)
-	
+		filename = askopenfilename()
+		model.load_map(load_map_matrix(filename))
 
 	if buttons_pressed[pygame.K_UP]:
 		model.move_player(0, "up")
@@ -73,19 +75,22 @@ while run:
 	elif not buttons_pressed[pygame.K_LCTRL] and already_pressed_lCTRL:
 		already_pressed_lCTRL = False
 	
-	win.fill((255,255,255))
+	main_surface.fill((255,255,255))
+	p0_surface.fill((255,255,255))
+	p1_surface.fill((255,255,255))
 	
-	for o in model.p0.field_of_view.get_objects(model.get_objects(), True):
-		pygame.draw.rect(win, o.color, (o.x, o.y, o.width, o.height))
-	# for o in model.get_objects():
-		# pygame.draw.rect(win, o.color, (o.x, o.y, o.width, o.height))
+	for o in model.get_objects():
+		pygame.draw.rect(main_surface, o.color, (o.x, o.y, o.width, o.height))
+	for o in model.get_field_of_view_objects(0):
+		pygame.draw.rect(p0_surface, o.color, (o.x, o.y, o.width, o.height))
+	for o in model.get_field_of_view_objects(1):
+		pygame.draw.rect(p1_surface, o.color, (o.x, o.y, o.width, o.height))
 	
-	
-	# model.update_pixelmatrix()
-	# pygame.surfarray.blit_array(win, model.pixelmatrix)
+	win.blit(main_surface, (0,0))
+	win.blit(p0_surface, (500,0))
+	win.blit(p1_surface, (500,300))
 	
 	pygame.display.update()
-	
 	
 pygame.quit()
 
