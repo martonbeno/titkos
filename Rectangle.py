@@ -12,7 +12,7 @@ class Rectangle:
 	def get_center_point(self):
 		return self.x+self.width//2, self.y+self.height//2
 	
-	#order: top right, top left, bottom left, bottom right
+	#order: top left, top right, bottom right, bottom left
 	def get_corners(self):
 		return [(self.x, self.y), (self.x+self.width-1, self.y), (self.x+self.width-1, self.y+self.height-1), (self.x, self.y+self.height-1)]
 	

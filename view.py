@@ -43,7 +43,7 @@ while run:
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
 		filename = askopenfilename()
-		model.load_map(load_map_matrix(filename))
+		model.load_map(map_to_dicts(filename))
 
 	if buttons_pressed[pygame.K_UP]:
 		model.move_player(0, "up")
@@ -93,31 +93,3 @@ while run:
 	pygame.display.update()
 	
 pygame.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

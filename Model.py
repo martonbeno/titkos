@@ -1,5 +1,3 @@
-import numpy as np
-
 from Object import *
 from Door import *
 from Goal import *
@@ -39,7 +37,7 @@ class Model:
 	
 	def load_map(self, d_list):
 		self.init()
-		for d in filter(lambda x:x['field'][0] != 'D', d_list):
+		for d in d_list:
 			field = d['field']
 			code = field[0]
 			try:
@@ -70,7 +68,7 @@ class Model:
 			if code == 'O':
 				self.add_switch(x, y, width, height, id)
 		
-		for d in filter(lambda x:x['field'][0] == 'D', d_list):
+		for d in d_list:
 			field = d['field']
 			code = field[0]
 			try:
