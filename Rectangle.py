@@ -20,9 +20,16 @@ class Rectangle:
 		return self.x < x < self.x + self.width and self.y < y < self.y + self.height
 	
 	def collides(self, other):
+		A, B, C, D = self.get_corners()
+		I, J, K, L = other.get_corners()
 		if any(self.is_point_inside(*corner) for corner in other.get_corners()):
 			return True
 		if any(other.is_point_inside(*corner) for corner in self.get_corners()):
+			return True
+		# A, C ; I, K
+		if I[0] < A[0] < K[0] and I[0] < C[0] < K[0] and A[1] < I[1] and K[1] < C[1]:
+			return True
+		if A[0] < I[0] < C[0] and A[0] < K[0] < C[0] and I[1] < A[1] and C[1] < K[1]:
 			return True
 		return False
 	

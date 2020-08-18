@@ -11,9 +11,12 @@ class Player(Object):
 		self.is_solid = False
 		self.id = id
 		self.switches = []
+		self.numb = False
 		self.field_of_view = Field_of_view(200, 200, self)
 	
 	def move(self, dir, v=None):
+		if self.numb:
+			return
 		if v==None:
 			v = self.speed
 		if dir == "up":

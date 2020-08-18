@@ -3,6 +3,7 @@ from tkinter.filedialog import askopenfilename
 import re
 from Persistence import *
 from colormap import rgb2hex
+import sys
 
 def color(code):
 	letter = code[0]
@@ -41,10 +42,15 @@ class Mapeditor:
 	def __init__(self):
 		cell_size = 10
 		toolkit_size = 50
-
-		width = 50
-		height = 50
-		self.mtx = [[0 for _ in range(50)] for _ in range(50)]
+		
+		try:
+			width = int(sys.argv[1])
+			height = int(sys.argv[2])
+		except:
+			width = 50
+			height = 50
+			
+		self.mtx = [[0 for _ in range(width)] for _ in range(height)]
 		self.active = 'N'
 
 

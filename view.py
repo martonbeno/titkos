@@ -10,9 +10,9 @@ model = Model()
 model.add_door(0,10,50,20, 1)
 #model.add_passable_wall(450,200,800,20,pass_id=0)
 #model.add_passable_wall(450,300,800,20,pass_id=1)
-model.add_portal(300,10,10,10, 0)
-model.add_portal(300,450,10,10, 0)
-model.add_switch(400,10,50,50, 1)
+model.add_portal(300,10,20,20, 0)
+model.add_portal(300,420,20,20, 0)
+model.add_screen(400,10,50,50, 250, 250, 200, 200)
 
 pygame.init()
 
@@ -43,7 +43,7 @@ while run:
 		print("----------------------------")
 	if buttons_pressed[pygame.K_l]:
 		filename = askopenfilename()
-		model.load_map(map_to_dicts(filename))
+		model.load_map(*map_to_dicts(filename))
 
 	if buttons_pressed[pygame.K_UP]:
 		model.move_player(0, "up")

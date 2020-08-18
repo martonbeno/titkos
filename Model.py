@@ -6,6 +6,7 @@ from Button import *
 from Wall import *
 from Portal import *
 from Switch import *
+from Screen import *
 
 class Model:
 	def __init__(self):
@@ -31,11 +32,14 @@ class Model:
 		self.portals = []
 		self.activators = []
 		self.activatables = []
+		self.screens = []
 	
 	def get_field_of_view_objects(self, player_id):
 		return self.players[player_id].field_of_view.get_objects(self.get_objects())
 	
-	def load_map(self, d_list):
+	def load_map(self, width, height, d_list):
+		self.width = width*self.block_size
+		self.height = height*self.block_size
 		self.init()
 		for d in d_list:
 			field = d['field']
@@ -120,9 +124,12 @@ class Model:
 		
 	def add_portal(self, x, y, width, height, id):
 		self.portals.append(Portal(x, y, width, height, id))
+		
+	def add_screen(self, x, y, width, height, fx, fy, fwidth, fheight):
+		self.screens.append(Screen(x, y, width, height, fx, fy, fwidth, fheight))
 	
 	def get_objects(self):
-		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.portals + self.switches + self.players
+		return self.goals + self.buttons + self.doors + self.walls + self.killer_walls + self.portals + self.screens + self.switches + self.players
 	
 	def move_player(self, player_id, dir):
 		player = self.players[player_id]
@@ -162,6 +169,7 @@ class Model:
 		self.update_switches(self.players[player_id])
 		self.players[player_id].use()
 		self.update_activatables()
+		self.update_screens(self.players[player_id])
 	
 	def kill_players(self):
 		for player in self.players:
@@ -185,6 +193,12 @@ class Model:
 		for switch in self.switches:
 			if player.collides(switch):
 				player.switches.append(switch)
+				
+	def update_screens(self, player):
+		for screen in self.screens:
+			if player.collides(screen):
+				screen.toggle(player)
+				break
 		
 	def update_portals(self):
 		for portal in self.portals:

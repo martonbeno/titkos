@@ -22,9 +22,13 @@ Art + képek beillesztése
 fix FPS								PIPA	X
 
 tetszőleges pályaméret mapeditor
+	+/- sor, oszlop
 egyedi nézőpont						PIPA	X
-	monitor
+	monitor							PIPA
 		látja a láthatatlant
 
 
 puzzle mező
+
+portal el van fosódva (ha emberméretű) [nagyobbaknál jól működik]
+elbaszódott az egész collision a kurva anyját hogy rakná teherbe

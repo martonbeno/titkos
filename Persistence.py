@@ -39,4 +39,4 @@ def map_to_dicts(filename):
 						skip_index.add((ii,jj))
 				ret.append({'field':act, 'x':i, 'y':j, 'height':o+1, 'width':k+1})
 	
-	return ret
+	return n, m, ret

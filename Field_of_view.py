@@ -1,14 +1,14 @@
 from Rectangle import *
 
 class Field_of_view(Rectangle):
-	def __init__(self, width, height, player):
+	def __init__(self, width, height, viewer):
 		self.width = width
 		self.height = height
-		self.player = player
+		self.viewer = viewer
 		self.update_coordinates()
 	
 	def update_coordinates(self):
-		center_x, center_y = self.player.get_center_point()
+		center_x, center_y = self.viewer.get_center_point()
 		self.x = center_x - self.width//2
 		self.y = center_y - self.height//2
 	
